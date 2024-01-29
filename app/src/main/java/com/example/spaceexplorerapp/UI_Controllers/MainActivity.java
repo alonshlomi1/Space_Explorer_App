@@ -8,6 +8,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.spaceexplorerapp.Logic.GameManager;
 import com.example.spaceexplorerapp.R;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private ExtendedFloatingActionButton main_FAB_left;
     private ExtendedFloatingActionButton main_FAB_right;
     private ShapeableImageView[][] main_ING_grid;
-
+    private GameManager gameManager;
     private GridLayout main_GRID_game;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,23 @@ public class MainActivity extends AppCompatActivity {
                 .centerCrop()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(main_IMG_background);
+        gameManager = new GameManager(main_IMG_hearts.length);
+        refreshUI();
+    }
 
+    private void refreshUI() {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 3; col++) {
+                main_ING_grid[row][col].setVisibility(View.INVISIBLE);
+            }
+        }
+        gameManager.getAsteroidList().stream().map(asteroid -> {
+            main_ING_grid[asteroid.getRow()][asteroid.getCol()].setImageResource(asteroid.getImage());
+            main_ING_grid[asteroid.getRow()][asteroid.getCol()].setVisibility(View.VISIBLE);
+            return null;
+        });
+        main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getSpaceship().getImage());
+        main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setVisibility(View.VISIBLE);
     }
 
     private void findViews() {
