@@ -1,10 +1,14 @@
-package com.example.spaceexplorerapp;
+package com.example.spaceexplorerapp.UI_Controllers;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.spaceexplorerapp.R;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
@@ -16,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
     private MaterialTextView main_LBL_score;
     private ExtendedFloatingActionButton main_FAB_left;
     private ExtendedFloatingActionButton main_FAB_right;
+    private ShapeableImageView[][] main_ING_grid;
+
+    private GridLayout main_GRID_game;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 .centerCrop()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(main_IMG_background);
+
     }
 
     private void findViews() {
@@ -39,5 +47,17 @@ public class MainActivity extends AppCompatActivity {
         main_FAB_left = findViewById(R.id.main_FAB_left);
         main_FAB_right = findViewById(R.id.main_FAB_right);
         main_IMG_background = findViewById(R.id.main_IMG_background);
+
+        // Initialize the grid array
+        main_ING_grid = new ShapeableImageView[8][3]; // Assuming 3 rows and 8 columns
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 3; col++) {
+                int viewId = getResources().getIdentifier("main_IMG_grid" + ((row * 3) + col + 1), "id", getPackageName());
+                main_ING_grid[row][col] = findViewById(viewId);
+                main_ING_grid[row][col].setVisibility(View.INVISIBLE);
+            }
+        }
+
     }
+
 }
