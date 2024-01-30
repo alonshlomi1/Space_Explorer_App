@@ -2,10 +2,10 @@ package com.example.spaceexplorerapp.UI_Controllers;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.spaceexplorerapp.Logic.GameManager;
@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private ExtendedFloatingActionButton main_FAB_right;
     private ShapeableImageView[][] main_ING_grid;
     private GameManager gameManager;
-    private GridLayout main_GRID_game;
     private static final long FRAME_DELAY = 900;
 
     private boolean timerOn = false;
@@ -83,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         refreshUI();
     }
 
+    @SuppressLint("DefaultLocale")
     private void refreshUI() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 3; col++) {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         main_ING_grid = new ShapeableImageView[8][3]; // Assuming 8 rows and 3 columns
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 3; col++) {
-                int viewId = getResources().getIdentifier("main_IMG_grid" + ((row * 3) + col + 1), "id", getPackageName());
+                @SuppressLint("DiscouragedApi") int viewId = getResources().getIdentifier("main_IMG_grid" + ((row * 3) + col + 1), "id", getPackageName());
                 main_ING_grid[row][col] = findViewById(viewId);
                 main_ING_grid[row][col].setVisibility(View.INVISIBLE);
             }
