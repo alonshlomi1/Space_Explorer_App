@@ -54,6 +54,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        startTimer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopTimer();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopTimer();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         stopTimer();
@@ -143,9 +161,9 @@ public class MainActivity extends AppCompatActivity {
         };
         main_LBL_score= findViewById(R.id.main_LBL_score);
         main_FAB_left = findViewById(R.id.main_FAB_left);
-        main_FAB_left.setAlpha(0.75f);
+        main_FAB_left.setAlpha(0.9f);
         main_FAB_right = findViewById(R.id.main_FAB_right);
-        main_FAB_right.setAlpha(0.75f);
+        //main_FAB_right.setAlpha(0.75f);
         main_IMG_background = findViewById(R.id.main_IMG_background);
 
         // Initialize the grid array
