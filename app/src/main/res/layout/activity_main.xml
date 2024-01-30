@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            android:alpha="0.75"
             tools:srcCompat="@drawable/ic_launcher_background" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -64,7 +65,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="32dp"
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -311,7 +313,9 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="32dp"
         android:text=""
-        app:icon="@drawable/left_icon" />
+        app:icon="@drawable/left_icon"
+        android:backgroundTint="@color/orange_300"
+        />
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -323,13 +327,8 @@
         android:layout_marginStart="16dp"
         android:layout_margin="32dp"
         android:text=""
-        app:icon="@drawable/right_icon" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </TableLayout>
+        app:icon="@drawable/right_icon"
+        android:backgroundTint="@color/orange_300"/>
 
 
 </RelativeLayout>

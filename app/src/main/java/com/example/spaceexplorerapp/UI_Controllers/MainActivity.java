@@ -3,9 +3,13 @@ package com.example.spaceexplorerapp.UI_Controllers;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
-import android.widget.GridLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.spaceexplorerapp.Logic.GameManager;
@@ -38,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         findViews();
         Glide.with(this)
-                .load(R.drawable.space_backround)
+                .load(R.drawable.space_backround2)
                 .centerCrop()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(main_IMG_background);
-        gameManager = new GameManager(main_IMG_hearts.length, main_ING_grid.length, main_ING_grid[0].length);
+        gameManager = new GameManager(main_IMG_hearts.length, main_ING_grid.length, main_ING_grid[0].length).setStart();
         refreshUI();
         main_FAB_left.setOnClickListener(view -> arrowClick(-1));
         main_FAB_right.setOnClickListener(view -> arrowClick(1));
@@ -96,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if(gameManager.checkCrush()){
             main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getRandomCrushSrc());
             setCurrentLife();
+            toastAndVibrate("BOOM!");
         }
         else
             main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getSpaceship().getImage());
@@ -110,7 +115,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    private void toastAndVibrate(String text) {
+        vibrate();
+        toast(text);
+    }
 
+    private void toast(String text) {
+        Toast.makeText(this
+                , text
+                , Toast.LENGTH_SHORT).show();    }
+
+    private void vibrate() {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(500);
+        }
+    }
     private void findViews() {
         main_IMG_hearts = new ShapeableImageView[]{
                 findViewById(R.id.main_IMG_heart1),
@@ -119,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
         };
         main_LBL_score= findViewById(R.id.main_LBL_score);
         main_FAB_left = findViewById(R.id.main_FAB_left);
+        main_FAB_left.setAlpha(0.75f);
         main_FAB_right = findViewById(R.id.main_FAB_right);
+        main_FAB_right.setAlpha(0.75f);
         main_IMG_background = findViewById(R.id.main_IMG_background);
 
         // Initialize the grid array
