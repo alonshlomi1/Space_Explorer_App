@@ -9,10 +9,14 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.spaceexplorerapp.Logic.GameManager;
+import com.example.spaceexplorerapp.Model.Asteroid;
 import com.example.spaceexplorerapp.R;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     private ShapeableImageView[][] main_ING_grid;
     private GameManager gameManager;
     private GridLayout main_GRID_game;
+    private static final long FRAME_DELAY = 900;
+
+    private boolean timerOn = false;
+    private Timer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +43,43 @@ public class MainActivity extends AppCompatActivity {
                 .centerCrop()
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(main_IMG_background);
-        gameManager = new GameManager(main_IMG_hearts.length);
+        gameManager = new GameManager(main_IMG_hearts.length, main_ING_grid.length, main_ING_grid[0].length);
+        refreshUI();
+        main_FAB_left.setOnClickListener(view -> arrowClick(-1));
+        main_FAB_right.setOnClickListener(view -> arrowClick(1));
+        startTimer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopTimer();
+    }
+
+    private void stopTimer() {
+        timerOn = false;
+        timer.cancel();
+    }
+
+    private void startTimer() {
+        if(!timerOn){
+            timerOn = true;
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(() -> nextFrame());
+                }
+            }, 0, FRAME_DELAY);
+        }
+    }
+    private void nextFrame(){
+        gameManager.randomNewAsteroid();
+        gameManager.nextFrame();
+        refreshUI();
+    }
+    private void arrowClick(int n) {
+        gameManager.moveSpaceship(n);
         refreshUI();
     }
 
@@ -45,13 +89,26 @@ public class MainActivity extends AppCompatActivity {
                 main_ING_grid[row][col].setVisibility(View.INVISIBLE);
             }
         }
-        gameManager.getAsteroidList().stream().map(asteroid -> {
+        for(Asteroid asteroid : gameManager.getAsteroidList()) {
             main_ING_grid[asteroid.getRow()][asteroid.getCol()].setImageResource(asteroid.getImage());
             main_ING_grid[asteroid.getRow()][asteroid.getCol()].setVisibility(View.VISIBLE);
-            return null;
-        });
-        main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getSpaceship().getImage());
+        }
+        if(gameManager.checkCrush()){
+            main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getRandomCrushSrc());
+            setCurrentLife();
+        }
+        else
+            main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getSpaceship().getImage());
         main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setVisibility(View.VISIBLE);
+
+        main_LBL_score.setText(String.format("%03d", gameManager.getScore()));
+    }
+
+    private void setCurrentLife() {
+        for(int i=0; i< main_IMG_hearts.length; i++) {
+            main_IMG_hearts[i].setVisibility(main_IMG_hearts.length - gameManager.getCrushes() > i ? View.VISIBLE : View.INVISIBLE);
+        }
+
     }
 
     private void findViews() {
@@ -66,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         main_IMG_background = findViewById(R.id.main_IMG_background);
 
         // Initialize the grid array
-        main_ING_grid = new ShapeableImageView[8][3]; // Assuming 3 rows and 8 columns
+        main_ING_grid = new ShapeableImageView[8][3]; // Assuming 8 rows and 3 columns
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 3; col++) {
                 int viewId = getResources().getIdentifier("main_IMG_grid" + ((row * 3) + col + 1), "id", getPackageName());
