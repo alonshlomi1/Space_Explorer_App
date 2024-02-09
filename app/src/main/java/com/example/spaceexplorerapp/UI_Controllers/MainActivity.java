@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.spaceexplorerapp.Logic.GameManager;
 import com.example.spaceexplorerapp.Model.Asteroid;
 import com.example.spaceexplorerapp.R;
+import com.example.spaceexplorerapp.Utilities.SignalManager;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         if(gameManager.checkCrush()){
             main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getRandomCrushSrc());
             setCurrentLife();
-            toastAndVibrate("BOOM!");
+            toastAndVibrate("BOOM!", 500);
         }
         else
             main_ING_grid[gameManager.getSpaceship().getRow()][gameManager.getSpaceship().getCol()].setImageResource(gameManager.getSpaceship().getImage());
@@ -133,26 +134,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    private void toastAndVibrate(String text) {
-        vibrate();
-        toast(text);
+    private void toastAndVibrate(String text, long milliseconds) {
+        SignalManager.getInstance().vibrate(milliseconds);
+        SignalManager.getInstance().toast(text);
     }
 
-    private void toast(String text) {
-        Toast.makeText(this
-                , text
-                , Toast.LENGTH_SHORT).show();    }
 
-    private void vibrate() {
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            //deprecated in API 26
-            v.vibrate(500);
-        }
-    }
     private void findViews() {
         main_IMG_hearts = new ShapeableImageView[]{
                 findViewById(R.id.main_IMG_heart1),
